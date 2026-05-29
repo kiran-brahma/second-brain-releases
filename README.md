@@ -48,6 +48,14 @@ Go to [Releases](https://github.com/kiran-brahma/second-brain-releases/releases)
 ## Installation
 
 1. Open the `.dmg` and drag **Second Brain.app** to Applications.
-2. On first launch, macOS will block the app — right-click → **Open** → **Open** to bypass Gatekeeper. This is a one-time step.
+2. Run this once in Terminal to remove the quarantine flag:
+   ```bash
+   xattr -d com.apple.quarantine "/Applications/Second Brain.app"
+   ```
+3. Launch the app normally.
+
+The app is not notarized with an Apple Developer certificate. The `xattr` command is a one-time step — subsequent updates install automatically inside the app and do not require it again.
+
+## Updates
 
 The app checks for updates on every launch. When a new version is available, a banner appears in the bottom-right corner. Click **Install** and the app updates and relaunches automatically.
