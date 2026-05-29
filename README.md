@@ -191,4 +191,4 @@ I am not a software engineer. I have never built a production app before this. E
 
 I built an ERP tool for my business, in production since March 2026, and document my learning on [The Operator Stack](https://www.theoperatorstack.com/themes/building-o9x).
 
-The source code is private. This repo hosts releases and the update manifest for the built-in updater.
+The source code is private currently. Once I feel the code has achieved maturity, I will open-source it. This repo hosts releases and the update manifest for the built-in updater.
