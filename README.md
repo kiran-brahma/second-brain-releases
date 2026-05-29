@@ -1,153 +1,159 @@
 # Second Brain
 
-We all have notes spread across Obsidian, Notion, Apple Notes — whatever app we fancy. The biggest problem I faced was finding the right note at the right moment. AI can simplify this, but I found that most RAG implementations lose something in the translation. I started thinking about how to build a simple app based on how I search for ideas and knowledge across my own notes. Second Brain is my answer. Feel free to explore and see if it meets your needs. I use this daily and update it as I find issues.
+My notes lived across Obsidian, Notion, and Apple Notes. The problem was never storage. The problem was finding the right note at the right moment. I tried standard RAG tools and found something gets lost in the translation. I built Second Brain to search my own knowledge the way I actually think. This is a personal tool I use daily. I update it as I find issues.
 
 ---
 
-## How It Works
+## The Core Idea
 
-### The Core Idea
+Standard RAG breaks documents into chunks, retrieves the chunks, and hands them to the AI. Chunks lose context. The AI gets fragments.
 
-Standard RAG breaks documents into chunks. When you query, it retrieves chunks and hands them to the AI. The problem: chunks lose context.
-
-I took a different approach, drawing from Anthropic's [Contextual RAG](https://www.anthropic.com/research/contextual-retrieval) idea. Every document in the knowledge base gets an AI-generated summary with five sections:
+I took a different approach, drawing from Anthropic's [Contextual RAG](https://www.anthropic.com/research/contextual-retrieval). Every document I store gets an AI-generated summary with five sections:
 
 - **Scope** — what this document covers
 - **Questions** — three to five core questions this document answers
 - **Key Claims** — the main arguments the document makes
 - **Key Concepts** — the central ideas explained within it
-- **Connections** — links to broader ideas and adjacent knowledge
+- **Connections** — links to broader ideas the AI knows
 
-The system embeds this summary, not the raw document. When you search, it retrieves the summary to find the right document, then sends the full document text to the AI as context. This gives the AI complete context rather than isolated snippets — and works well now that AI model context windows have expanded significantly.
+The system embeds this summary, not the raw document. Search retrieves the summary to find the right document. The AI then reads the full document text as context. This gives the AI complete information rather than isolated snippets.
 
 ---
 
 ## Features
 
-### Chat with Your Knowledge Base
+### Chat
 
-Ask a question in natural language. Before answering, the AI breaks your query into precise search queries (which you can review and adjust). It runs a hybrid vector and keyword search, retrieves the most relevant documents, and synthesises a cited answer grounded in your own knowledge.
+Ask a question in natural language. The AI breaks the query into precise search queries, which you can review and adjust before running. It runs a hybrid vector and keyword search, retrieves the most relevant documents, and synthesises a cited answer grounded in your own knowledge. The AI reads full documents, not summaries.
 
 ### Search
 
-When you want to read rather than ask, use Search. It runs the same retrieval process but returns a list of documents to read on your own — no AI answer, just your notes, surfaced.
+When I want to read rather than ask, I use Search. It runs the same retrieval process but returns a list of documents. No AI answer. Just my notes, surfaced.
 
 ### Document Library
 
-Store articles, notes, research papers, YouTube transcripts, book notes — any text. Once you add a document, the AI generates the structured summary described above. Review it, fix what needs fixing, and embed it. The summary quality determines retrieval quality. Initial summaries need some editing to work well.
+Store articles, notes, research papers, YouTube transcripts, book notes. Any text. Once added, the AI generates the structured summary above. Review it, fix what needs fixing, and embed it. The summary quality determines retrieval quality. Initial summaries need editing. That editing pays off in every future search.
+
+You can link documents to each other. When chat retrieves a linked document, its connected documents surface with it. More links mean richer context.
 
 ### Review Queue
 
-Spaced-repetition review built into the library. The system schedules documents before you forget them based on your recall ratings. It generates questions to test whether you actually remember what you read. Short daily sessions compound faster than occasional long ones.
+Spaced-repetition review built into the library. The system schedules documents before you forget them, based on your recall ratings. It generates questions to test whether you actually remember what you read. Ten documents reviewed daily compounds faster than 70 reviewed once a week.
 
 ### Critiques
 
-After any AI response, run a critique. A second AI model reads the response and stress-tests the reasoning: logical fallacies, missing perspectives, unsupported claims, framing bias, cognitive distortions. Two models trained differently disagree more, which produces a more independent assessment. Within Settings, there is a Thinking Reference prompt that shapes how the critique model evaluates. I include a simple default — update it with your own mental models.
+After any AI response, run a critique. A second AI model reads the response and stress-tests the reasoning: logical fallacies, missing perspectives, unsupported claims, framing bias, cognitive distortions. Two models trained differently disagree more. That disagreement is the point.
+
+Within Settings, there is a Thinking Reference prompt that shapes how the critique model evaluates. I include a simple default. Update it with your own mental models.
 
 ### Crucible
 
-As your library grows, you will find documents whose summaries are almost identical, missing the subtle differences between them. The Crucible finds these pairs and asks the AI to rewrite both summaries to encode where they agree and where they diverge. The subtle difference between documents matters more than the similarity. This feature surfaces it.
+As the library grows, document summaries start to look similar, missing subtle differences between them. The Crucible finds these pairs. The AI rewrites both summaries to encode where they agree and where they diverge. The difference is what matters for good retrieval. This feature makes the difference visible.
 
 ### Writing Workflow
 
-Writing improves my thinking more than any other process I have tried. The original need for this app was to help with the research phase of writing. After using it for a few weeks, I built my writing process directly into the app. This workflow works for me — feel free to skip it.
+Writing improves my thinking more than any other process I have tried. The original need for this app was the research phase of my writing. After two weeks of use, I built my writing process directly into the app. This workflow works for me. Skip it if it does not fit yours.
 
-**Step 1 — Grill**
-Start with a rough thesis. The AI runs Socratic dialogue, pushing back until we reach shared understanding: a core claim, essential context, and the outcome you want the reader to have. Only then does the research phase unlock.
+**Step 1: Grill**
 
-**Step 2 — Research**
-The thesis decomposes into research themes. Each theme searches your knowledge base and optional web sources. The output is a structured research brief: key insights, sub-themes, contradictions, writing prompts. You can add more themes if needed.
+Start with a rough thesis. The AI runs Socratic dialogue, pushing back until we reach shared understanding: a core claim, essential context, and the outcome I want the reader to have. The research phase does not unlock until this is settled.
 
-**Step 3 — Draft**
-A clean rich-text editor. No AI assistance. Research briefs sit one click away. I stopped asking AI to write the initial draft — I got stuck inside its structure. You write. You decide the shape.
+**Step 2: Research**
 
-**Step 4 — Review**
-Submit the draft for a cognitive audit. The AI checks the foundational argument, surfaces your biases, tests replicability, and applies strict style rules. You get specific feedback, not praise.
+The thesis decomposes into research themes. Each theme searches the knowledge base and optional web sources. The output is a structured research brief: key insights, sub-themes, contradictions, writing prompts. You can add more themes.
 
-**Step 5 — Iterate**
-I require three review cycles before the essay is done. The first draft always has blind spots the writer cannot see. Three honest cycles is where the improvement flattens. You can do more — the minimum is three.
+**Step 3: Draft**
 
-**Step 6 — Style Guide**
+A clean rich-text editor. No AI assistance. Research briefs sit one click away. I stopped asking AI to write the first draft. I got stuck inside the structure it chose. You write. You decide the shape.
+
+**Step 4: Review**
+
+Submit the draft for a cognitive audit. The AI checks the foundational argument, surfaces bias, tests replicability, and applies strict style rules. The feedback is specific. There is no praise.
+
+**Step 5: Iterate**
+
+Three review cycles before the essay is done. This is a hard minimum, not a suggestion. First drafts have blind spots the writer cannot see. Three honest cycles is where improvement flattens. You can do more.
+
+**Step 6: Style Guide**
+
 Final check against your own writing rules. Define your rules in Settings → Prompts → Style Guide. The AI flags every violation. Fix what needs fixing, then finalise.
 
 ---
 
 ## AI Providers
 
-The app supports Ollama (local and cloud), Claude, OpenAI, Gemini, and any OpenAI-compatible endpoint. You configure three models independently:
+The app works with Ollama (local and cloud), Claude, OpenAI, Gemini, and any OpenAI-compatible endpoint. You configure three models independently:
 
 - **Chat Model** — your daily workhorse
-- **Critique Model** — a second model (preferably more capable) for review and critique
+- **Critique Model** — a second model, preferably more capable, for review and critique
 - **Embedding Model** — for generating document vectors
 
-Web search works with Ollama, Anthropic, OpenAI, Gemini, and OpenRouter.
-
-Your API keys stay on your machine, stored in the local SQLite database.
+Web search works with Ollama, Anthropic, OpenAI, Gemini, and OpenRouter. Your API keys stay on your machine, stored in a local SQLite database. If you have a capable local machine, run everything through Ollama with no external calls.
 
 ---
 
 ## Data
 
-All data lives in a SQLite database at `~/Library/Application Support/com.secondbrain.tauri/`. No data goes to any server except the AI provider you choose. If you have a capable local machine, you can run everything through Ollama with no external calls at all.
+All data lives in a SQLite database at `~/Library/Application Support/com.secondbrain.tauri/`. No data goes to any server except the AI provider you choose.
 
 ---
 
 ## Download
 
-The app currently builds for macOS only. Download the latest `.dmg` from [Releases](https://github.com/kiran-brahma/second-brain-releases/releases).
+The app builds for macOS only, for now. Download the latest `.dmg` from [Releases](https://github.com/kiran-brahma/second-brain-releases/releases).
 
-I release updates every two to three weeks as I use the app daily and find issues. Each release includes a log of changes.
+I use this daily. I release updates every two to three weeks as I find issues. Each release includes a log of changes. A Windows build is possible once the macOS version is stable.
 
 ---
 
 ## Installation
 
 1. Open the `.dmg` and drag **Second Brain.app** to Applications.
-2. Run this once in Terminal to remove the macOS quarantine flag:
+2. Run this once in Terminal:
    ```bash
    xattr -d com.apple.quarantine "/Applications/Second Brain.app"
    ```
 3. Launch normally.
 
-The app is not notarized with an Apple Developer certificate. The `xattr` command is a one-time step. All subsequent updates install automatically inside the app — no repeat required.
+The app is not notarized with an Apple certificate. The `xattr` command removes the quarantine flag. It is a one-time step. All subsequent updates install automatically inside the app.
 
 ---
 
 ## Updates
 
-The app checks for updates on launch. When a new version is available, a banner appears in the bottom-right corner. Click **Install** — the app updates and relaunches.
+The app checks for updates on every launch. When a new version is available, a banner appears in the bottom-right corner. Click **Install**. The app updates and relaunches.
 
 ---
 
 ## Default Prompts
 
-The app ships with default prompts for each AI function. All prompts are editable in Settings → Prompts. The defaults live in the [`prompts/`](./prompts/) folder in this repo — copy, adapt, or replace them with your own.
+All prompts ship with defaults and are editable in Settings → Prompts. The defaults live in the [`prompts/`](./prompts/) folder in this repo.
 
-| Prompt | Key | Notes |
-|--------|-----|-------|
+| Prompt | Key | Purpose |
+|--------|-----|---------|
 | [Critical Analysis](./prompts/critical-analysis.md) | `critical` | How the critique model stress-tests reasoning |
 | [Thinking Reference](./prompts/thinking-reference.md) | `thinking` | Analytical framework injected during critique |
-| [Grill System](./prompts/grill-system.md) | `grill_system` | Socratic editor persona for Phase 1 |
+| [Grill System](./prompts/grill-system.md) | `grill_system` | Socratic editor for Phase 1 |
 | [Review System](./prompts/review-system.md) | `review_system` | Four-audit cognitive reviewer for Phase 4 |
 | [Research System](./prompts/research-system.md) | `research_system` | Research synthesiser for Phase 2 |
-| Style Guide | `style_guide` | Empty by default — define your own writing rules |
+| Style Guide | `style_guide` | Empty by default. Define your own writing rules. |
 
 ---
 
 ## Tips
 
-- Write documents in your own words where possible. When you paste someone else's content, add a 200–350 word section at the end with your own understanding and what you took from it. The AI gets a much better picture of your thinking when your voice is in the document.
+Write documents in your own words where possible. When you paste someone else's content, add a 200 to 350 word section at the end with your own understanding of what you took from it. The AI builds a better picture of your thinking when your voice is in the document.
 
-- I read on Kindle and highlight as I go. Once done with a book, I review the highlights, group them by theme, and write a short summary in my own words under each theme. I upload this as a single document. One document per book, structured by theme, with your voice in it.
+I read on Kindle and highlight as I go. Once done with a book, I review the highlights, group them by theme, and write a short summary in my own words under each theme. One document per book, structured by theme, with my voice throughout.
 
-- The Chat Persona and Document Summary prompts work as additions to the core prompt — write only what you want to add, not a full replacement. Every other prompt is a full replacement. Change them.
+Apart from Chat Persona and Document Summary, every other prompt is a full replacement. The defaults are starting points. Change them to match how you think.
 
 ---
 
 ## About
 
-I am not a software engineer. I have never built a production app before this. Everything I build for personal use runs with AI tools — I use Claude Code, Codex, and Pi. The codebase reflects that. I run regular code quality passes to clean up AI slop, but things slip through.
+I am not a software engineer. I have never built a production app before this. Everything I build runs with AI tools. I use Claude Code, Codex, and Pi. The codebase reflects that. I run regular code quality passes to clean it up, but things slip through.
 
-I built an ERP tool for my business (in production since March 2026) and document my learning on [The Operator Stack](https://www.theoperatorstack.com/themes/building-o9x).
+I built an ERP tool for my business, in production since March 2026, and document my learning on [The Operator Stack](https://www.theoperatorstack.com/themes/building-o9x).
 
 The source code is private. This repo hosts releases and the update manifest for the built-in updater.
