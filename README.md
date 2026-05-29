@@ -10,11 +10,11 @@ Standard RAG breaks documents into chunks, retrieves the chunks, and hands them 
 
 I took a different approach, drawing from Anthropic's [Contextual RAG](https://www.anthropic.com/research/contextual-retrieval). Every document I store gets an AI-generated summary with five sections:
 
-- **Scope** — what this document covers
-- **Questions** — three to five core questions this document answers
-- **Key Claims** — the main arguments the document makes
-- **Key Concepts** — the central ideas explained within it
-- **Connections** — links to broader ideas the AI knows
+- **Scope**: what this document covers
+- **Questions**: three to five core questions this document answers
+- **Key Claims**: the main arguments the document makes
+- **Key Concepts**: the central ideas explained within it
+- **Connections**: links to broader ideas the AI knows
 
 The system embeds this summary, not the raw document. Search retrieves the summary to find the right document. The AI then reads the full document text as context. This gives the AI complete information rather than isolated snippets.
 
@@ -84,9 +84,9 @@ Final check against your own writing rules. Define your rules in Settings → Pr
 
 The app works with Ollama (local and cloud), Claude, OpenAI, Gemini, and any OpenAI-compatible endpoint. You configure three models independently:
 
-- **Chat Model** — your daily workhorse
-- **Critique Model** — a second model, preferably more capable, for review and critique
-- **Embedding Model** — for generating document vectors
+- **Chat Model**: your daily workhorse
+- **Critique Model**: a second model, preferably more capable, for review and critique
+- **Embedding Model**: for generating document vectors
 
 Web search works with Ollama, Anthropic, OpenAI, Gemini, and OpenRouter. Your API keys stay on your machine, stored in a local SQLite database. If you have a capable local machine, run everything through Ollama with no external calls.
 
@@ -147,6 +147,41 @@ Write documents in your own words where possible. When you paste someone else's 
 I read on Kindle and highlight as I go. Once done with a book, I review the highlights, group them by theme, and write a short summary in my own words under each theme. One document per book, structured by theme, with my voice throughout.
 
 Apart from Chat Persona and Document Summary, every other prompt is a full replacement. The defaults are starting points. Change them to match how you think.
+
+---
+
+## Architecture
+
+The app has two layers. Rust runs the backend. Next.js runs the frontend inside the Tauri webview. They never share a database connection.
+
+**Rust (backend)**
+- Owns all SQLite access via [rusqlite](https://github.com/rusqlite/rusqlite). The frontend cannot query the database directly.
+- Stores document embeddings as float vectors in SQLite. Cosine similarity search runs in Rust, not the AI provider.
+- Enforces all writing workflow phase transitions server-side. The UI cannot skip phases.
+- WAL mode enabled. Foreign key constraints on. No ORM.
+
+**Next.js (frontend)**
+- Runs as a static export inside the Tauri webview. No server. No API routes.
+- Calls Rust via `invoke()` through a single bridge file. All AI logic runs client-side.
+- Uses the [Vercel AI SDK](https://sdk.vercel.ai) for streaming responses across all providers. Switching providers requires no code changes in the UI.
+- Vector embeddings generate in the browser and pass to Rust for storage.
+
+All outbound HTTP goes directly from the webview to the AI provider. No proxy. No backend relay. The CSP is open by design.
+
+---
+
+## Development
+
+I am not a software engineer. I build with AI tools: Claude Code, Codex, and Pi. Every change follows this process:
+
+1. Plan with the [Improve Codebase Architecture](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture) skill. Convert the plan to a PRD using the [to-prd](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-prd) skill.
+2. Build with Claude Code or Codex.
+3. Run the [DeSlop](https://github.com/cursor/plugins/tree/3347cbab5b54136f6fba0994c3a01a56f7fb7fca/cursor-team-kit/skills/deslop) skill to remove AI-generated noise from the code.
+4. Run the [Thermo-Nuclear Code Quality Review](https://github.com/cursor/plugins/tree/3347cbab5b54136f6fba0994c3a01a56f7fb7fca/cursor-team-kit/skills/thermo-nuclear-code-quality-review) skill to catch structural problems.
+5. Build and test locally.
+6. Commit.
+
+These skills are public. Anyone can use them. I document what I learn from building this way on [The Operator Stack](https://www.theoperatorstack.com/themes/building-o9x).
 
 ---
 
