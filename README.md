@@ -62,19 +62,22 @@ Start with a rough thesis. The AI runs Socratic dialogue, pushing back until we 
 
 The thesis decomposes into research themes. Each theme searches the knowledge base and optional web sources. The output is a structured research brief: key insights, sub-themes, contradictions, writing prompts. You can add more themes.
 
-**Step 3: Draft**
+**Step 3: Framing**
+I enjoyed the talk given by Patrick Winston On [How to Speak](https://www.youtube.com/watch?v=Unzc731iCUY) and use his ideas to build a structure to the essay. AI has clear instructions to guide in this process.
+
+**Step 4: Draft**
 
 A clean rich-text editor. No AI assistance. Research briefs sit one click away. I stopped asking AI to write the first draft. I got stuck inside the structure it chose. You write. You decide the shape.
 
-**Step 4: Review**
+**Step 5: Review**
 
 Submit the draft for a cognitive audit. The AI checks the foundational argument, surfaces bias, tests replicability, and applies strict style rules. The feedback is specific. There is no praise.
 
-**Step 5: Iterate**
+**Step 6: Iterate**
 
 Three review cycles before the essay is done. This is a hard minimum, not a suggestion. First drafts have blind spots the writer cannot see. Three honest cycles is where improvement flattens. You can do more.
 
-**Step 6: Style Guide**
+**Step 7: Style Guide**
 
 Final check against your own writing rules. Define your rules in Settings → Prompts → Style Guide. The AI flags every violation. Fix what needs fixing, then finalise.
 
